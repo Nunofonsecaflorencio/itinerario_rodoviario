@@ -1,2 +1,10 @@
+n4, Mozal, Baixa, 50, 2, 0, 40
 n4, Mozal, Joao Mateus, 10, 2, 0, 40
+n4, Mozal, Malhapsene, 10, 2, 0, 40
 n4, Joao Mateus, Baixa, 40, 4, 45, 70
+n4, Joao Mateus, Malhapsene, 40, 4, 45, 70
+avenida mz, Baixa, Malhazine, 40, 4, 45, 70
+avenida mz, Museu, Malhazine, 40, 4, 45, 70
+avenida julius n, Baixa, Magoanine, 55, 4, 45, 70
+avenida mz, Baixa, Magoanine, 40, 4, 45, 70
+avenida julius n, Albazine, Magoanine, 40, 4, 45, 70

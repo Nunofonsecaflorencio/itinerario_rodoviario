@@ -43,13 +43,18 @@ def ler_dados(ficheiro):
         velocidade_media = float(linha[6])
         
         vias.append(Via(codigo, origem, destino, distancia, (piso, portagem, velocidade_media)))
+        vias.append(Via(codigo, destino, origem, distancia, (piso, portagem, velocidade_media)))
         localidades.add(origem)
         localidades.add(destino)
         
         if origem not in rede:
             rede[origem] = []
+
+        if destino not in rede:
+            rede[destino] = []
         
-        rede[origem].append(vias[-1])
+        rede[origem].append(vias[-2])
+        rede[destino].append(vias[-1])
         
         arrestas.add((origem, destino))
         
@@ -71,13 +76,13 @@ def dfs(rede, origem, destino, funcao_custo):
         
         if localidade == destino:
             
-            solucao = []
+            solucao = [(destino, None)]
             nodo = destino
             
             while parentes[nodo]:
-                solucao.insert(0, nodo)
-                nodo = parentes[nodo]
-            solucao.insert(0, nodo)
+                solucao.insert(0, parentes[nodo])
+                nodo = parentes[nodo][0]
+            # solucao.insert(0, parentes[nodo])
             
             return solucao, ordem
         
@@ -87,7 +92,7 @@ def dfs(rede, origem, destino, funcao_custo):
         for via in rede[localidade]:
             if not via.destino in visitado:
                 fronteira.append(via.destino)
-                parentes[via.destino] = localidade
+                parentes[via.destino] = (localidade, via.codigo)
         
     return None, ordem # sem solução
 
