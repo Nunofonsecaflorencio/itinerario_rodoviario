@@ -61,20 +61,33 @@ def ler_dados(ficheiro):
 def dfs(rede, origem, destino, funcao_custo):
     fronteira = [origem]
     visitado = set()
+    parentes = {origem: None}
     ordem = []
     
-    while not fronteira.empty():
+    while fronteira:
         localidade = fronteira.pop(0)
         
+        ordem.append(localidade)
+        
         if localidade == destino:
-            return ordem
+            
+            solucao = []
+            nodo = destino
+            
+            while parentes[nodo]:
+                solucao.insert(0, nodo)
+                nodo = parentes[nodo]
+            solucao.insert(0, nodo)
+            
+            return solucao, ordem
         
         visitado.add(localidade)
-        ordem.append(localidade)
+        
         
         for via in rede[localidade]:
             if not via.destino in visitado:
                 fronteira.append(via.destino)
+                parentes[via.destino] = localidade
         
-    return [] # sem solução
+    return None, ordem # sem solução
 
