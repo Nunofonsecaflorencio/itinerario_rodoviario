@@ -4,10 +4,11 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-from itertools import groupby
-
 from time import sleep
 
+# sg.theme_previewer() 
+sg.theme('DarkTeal9') 
+sg.set_options(font=("Comic Sans",16))
 
 def calculate_midpoint(posA, posB, rad):
     # Calculate the control point for the arc
@@ -37,7 +38,7 @@ def remove_duplicates(input_list):
     return output_list
 
 
-def draw_arrow(ax, posA, posB, radius, c='0.2', tickness=0.1):
+def draw_arrow(ax, posA, posB, radius, c='0.4', tickness=0.1):
     
   
     ax.annotate("",
@@ -54,7 +55,8 @@ def draw_label(ax, label, posA, posB,radius):
     ax.annotate(
                 label,
                 xy=posA,
-                xytext=calculate_midpoint(posA, posB, radius)
+                xytext=calculate_midpoint(posA, posB, radius),
+                fontsize=6
             )
 
 def plot_pointer(ax, pos, size):
@@ -67,7 +69,7 @@ def plot_pointer(ax, pos, size):
         "",
         xy=pos, xytext=(x, y - size),
         arrowprops=dict(
-                    arrowstyle="->", color="green",
+                    arrowstyle="->", color="gold",
                     linewidth=5
                 )
     )
@@ -80,22 +82,36 @@ class ItinerarioGUI:
         self.network = network
         self.functions = functions
         
-        layout = [
-            [sg.Canvas(key="-CANVAS-")],
-            [
-                sg.T("Origem"), sg.Combo(list(network.keys()), key="-ORIGEM-"),
-                sg.T("Destino"), sg.Combo(list(network.keys()), key="-DESTINO-"),
-            ],
-            [
-                sg.T("Critério"), sg.Combo(list(functions['costs']), default_value=list(functions['costs'])[0], key="-CRITERIO-"),
-                sg.T("Algoritmo"), sg.Combo(list(functions['search_algorithms']), default_value=list(functions['search_algorithms'])[0], key="-ALGORITMO-"),
-            ],
-            [sg.Button("Buscar", key='-BUSCAR-'), sg.Button("Limpar", key='-LIMPAR-')]
+        layoutA = [[
+            sg.Col([
+                [sg.T("Origem", size=(1, 1), expand_x=True), sg.Combo(list(network.keys()), key="-ORIGEM-", expand_x=True)],
+                [sg.T("Destino", size=(1, 1), expand_x=True), sg.Combo(list(network.keys()), key="-DESTINO-", expand_x=True)],
+            ], expand_x=True),
+            sg.Col([
+                [sg.T("Critério", size=(1, 1), expand_x=True), sg.Combo(list(functions['costs']), default_value=list(functions['costs'])[0], key="-CRITERIO-", expand_x=True)],
+                [sg.T("Algoritmo", size=(1, 1), expand_x=True), sg.Combo(list(functions['search_algorithms']), default_value=list(functions['search_algorithms'])[0], key="-ALGORITMO-", expand_x=True)],
+            ], expand_x=True)
+        ]]
+        
+        layoutB = [
+            [sg.Button("Buscar", key='-BUSCAR-', button_color='lime green', size=(16, 2), expand_x=True)],
+            [sg.Button("Rearranjar", key='-REARRANJAR-', expand_x=True), sg.Button("Reset", key='-LIMPAR-', expand_x=True)],
         ]
+        
+        layout = [
+            [sg.Canvas(key="-CANVAS-", background_color='black', expand_x=True)],
+            [sg.Column(layoutA, expand_x=True), sg.VSeparator(), sg.Column(layoutB, expand_x=True)]
+        ]
+        
+        
         self.window = sg.Window("Itinerário Rodoviário", layout, finalize=True)
         
+
         self.fig, self.ax = plt.subplots()
-        self.fig.set_size_inches(15, 6)
+        self.fig.set_size_inches(12, 7)
+        self.fig.subplots_adjust(left=0, right=1, bottom=0, top=1)
+        self.fig.set_facecolor('lightcyan')
+        
         self.figure_canvas_agg = FigureCanvasTkAgg(self.fig, self.window['-CANVAS-'].TKCanvas)
         self.figure_canvas_agg.get_tk_widget().pack(side='top', fill='both', expand=1)
         
@@ -109,12 +125,14 @@ class ItinerarioGUI:
             for via in vias:
                 if (loc, via.destino, via.distancia) not in dont_add:
                     self.graph.add_edge(loc, via.destino,
-                                        label=f"{via.distancia}km {via.codigo}",
+                                        label=f"{via.codigo.upper()}",
                                         via=via.codigo
                                         )
                     dont_add.add((via.destino, loc, via.distancia))
             
         self.graph_pos = nx.spring_layout(self.graph)
+        
+        
         
 
     def draw(self, highlights={}):
@@ -122,7 +140,6 @@ class ItinerarioGUI:
         pos = self.graph_pos
         
         self.fig.clf()
-        
         
         #edges
         ax = plt.gca()
@@ -144,16 +161,17 @@ class ItinerarioGUI:
                 draw_arrow(ax, pos[u], pos[v], rad, color, tickness=3)
                 
             # label
-            draw_label(ax, w, pos[u], pos[v], rad)
+            draw_label(ax, w, pos[u], pos[v], rad*2)
  
          # nodes
-        colors = [highlights[node]['color'] if node in highlights else 'b' for node in G.nodes ]
-        nx.draw_networkx_nodes(self.graph, self.graph_pos, node_color=colors)
-        nx.draw_networkx_labels(self.graph, self.graph_pos, font_size=10, font_family="sans-serif")
+        colors = [highlights[node]['color'] if node in highlights else 'skyblue' for node in G.nodes ]
+        nx.draw_networkx_nodes(self.graph, self.graph_pos, node_color=colors, node_size=1500)
+        labels = labels = {node: node.title() for node in G.nodes()}
+        nx.draw_networkx_labels(self.graph, self.graph_pos, labels=labels, font_size=12, font_family="sans-serif", font_weight="bold", font_color="black")
         
         
         if highlights.get('point_to'):
-            plot_pointer(plt.gca(), pos[highlights['point_to']], size=0.2)
+            plot_pointer(ax, pos[highlights['point_to']], size=0.2)
         
         ax.axis('off')
         self.figure_canvas_agg.draw()
@@ -164,27 +182,36 @@ class ItinerarioGUI:
         nodes = remove_duplicates(nodes)
         
         for node in nodes:
+            highlights[node] = {'color': 'orange'}
+            highlights['point_to'] = node
+            self.draw(highlights)
+            sleep(speed*0.01)
+            
             for sucessor, _ in self.functions['get_sucessors'](node):
                 if highlights.get(sucessor):
                     continue
                 highlights[sucessor] = {'color':'gray'}
+                self.draw(highlights)
+                sleep(speed / 6)
             
-            highlights[node] = {'color': 'orange'}
-            highlights['point_to'] = node
-
-            self.draw(highlights)
-            sleep(speed)
+            sleep(speed / 4)
+            
+            
             
         # Solution
         for i in range(len(solution)):
             node, via_cod = solution[i]
             highlights[node] = {'color': 'green'}
+            
+            self.draw(highlights)
+            sleep(speed / 5)
+            
             if i < len(solution) - 1:
                 highlights[(node, via_cod, solution[i+1][0])] = {'color': 'green'}
             
             
             self.draw(highlights)
-            sleep(speed / 2)
+            sleep(speed / 6)
         
     def run(self):
         self.draw()
@@ -195,6 +222,10 @@ class ItinerarioGUI:
                 break      
             
             if event == '-LIMPAR-':
+                self.draw()
+
+            if event == '-REARRANJAR-':
+                self.initialize(self.network)
                 self.draw()
             
             if event == '-BUSCAR-':
@@ -209,7 +240,7 @@ class ItinerarioGUI:
                 
                 
                 if solucao:
-                    self.animate(ordem, solucao, speed=0.3)
+                    self.animate(ordem, solucao, speed=0.8)
                     # sg.popup(f"SOLUÇÃO: {solucao} \nORDEM DE VISITA: {ordem}", title="Solução")
                 else:
                     sg.popup_error("Solução não encontrada\n" + f"SOLUÇÃO: {solucao} \nORDEM DE VISITA: {ordem}")
