@@ -4,6 +4,8 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
+from itertools import groupby
+
 from time import sleep
 
 
@@ -23,12 +25,60 @@ def calculate_midpoint(posA, posB, rad):
 
     return midpoint
 
+def remove_duplicates(input_list):
+    seen = set()
+    output_list = []
+
+    for item in input_list:
+        if item not in seen:
+            seen.add(item)
+            output_list.append(item)
+
+    return output_list
+
+
+def draw_arrow(ax, posA, posB, radius, c='0.2', tickness=0.1):
+    
+  
+    ax.annotate("",
+                xy=posA,
+                xytext=posB,
+                arrowprops=dict(
+                    arrowstyle="-", color=c,
+                    connectionstyle="arc3,rad=rrr".replace('rrr',str(radius)),
+                    linewidth=tickness
+                )
+            )
+
+def draw_label(ax, label, posA, posB,radius):
+    ax.annotate(
+                label,
+                xy=posA,
+                xytext=calculate_midpoint(posA, posB, radius)
+            )
+
+def plot_pointer(ax, pos, size):
+    # Define the points of the arrow/triangle
+    x = pos[0]
+    y = pos[1]
+    arrow_points = [(x - size, y - size), (x + size, y - size), (x, y + size)]
+
+    ax.annotate(
+        "",
+        xy=pos, xytext=(x, y - size),
+        arrowprops=dict(
+                    arrowstyle="->", color="green",
+                    linewidth=5
+                )
+    )
+
+
+
 class ItinerarioGUI:
-    def __init__(self, network, search_algorithms, costs):
+    def __init__(self, network, functions):
         
         self.network = network
-        self.search_algorithms = search_algorithms
-        self.costs = costs
+        self.functions = functions
         
         layout = [
             [sg.Canvas(key="-CANVAS-")],
@@ -37,8 +87,8 @@ class ItinerarioGUI:
                 sg.T("Destino"), sg.Combo(list(network.keys()), key="-DESTINO-"),
             ],
             [
-                sg.T("Critério"), sg.Combo(list(costs), default_value=list(costs)[0], key="-CRITERIO-"),
-                sg.T("Algoritmo"), sg.Combo(list(search_algorithms), default_value=list(search_algorithms)[0], key="-ALGORITMO-"),
+                sg.T("Critério"), sg.Combo(list(functions['costs']), default_value=list(functions['costs'])[0], key="-CRITERIO-"),
+                sg.T("Algoritmo"), sg.Combo(list(functions['search_algorithms']), default_value=list(functions['search_algorithms'])[0], key="-ALGORITMO-"),
             ],
             [sg.Button("Buscar", key='-BUSCAR-'), sg.Button("Limpar", key='-LIMPAR-')]
         ]
@@ -58,20 +108,20 @@ class ItinerarioGUI:
         for loc, vias in network.items():
             for via in vias:
                 if (loc, via.destino, via.distancia) not in dont_add:
-                    self.graph.add_edge(loc, via.destino, label=f"{via.distancia}km {via.codigo}")
+                    self.graph.add_edge(loc, via.destino,
+                                        label=f"{via.distancia}km {via.codigo}",
+                                        via=via.codigo
+                                        )
                     dont_add.add((via.destino, loc, via.distancia))
             
-        self.graph_pos = nx.spring_layout(self.graph, seed=1)
-        print(self.graph)
+        self.graph_pos = nx.spring_layout(self.graph)
+        
 
-    def draw(self):
+    def draw(self, highlights={}):
         G = self.graph
         pos = self.graph_pos
         
         self.fig.clf()
-         # nodes
-        nx.draw_networkx_nodes(self.graph, self.graph_pos)
-        nx.draw_networkx_labels(self.graph, self.graph_pos, font_size=10, font_family="sans-serif")
         
         
         #edges
@@ -79,52 +129,88 @@ class ItinerarioGUI:
         for normal, with_data in zip(G.edges, G.edges(data=True)):
             u, v, i = normal
             w = with_data[2]['label']
+            code = with_data[2]['via']
             rad = 1 * i
             
-            ax.annotate("",
-                xy=pos[u],
-                xytext=pos[v],
-                arrowprops=dict(
-                    arrowstyle="-", color="0.2",
-                    # shrinkA=5, shrinkB=5,
-                    # patchA=None, patchB=None,
-                    connectionstyle="arc3,rad=rrr".replace('rrr',str(rad)))
-                )
+            # arrow
+            k = (u, code, v)
+            color = highlights[k]['color'] if k in highlights else None
+            k = (v, code, u)
+            color = highlights[k]['color'] if k in highlights else color
             
-            ax.annotate(
-                w,
-                xy=pos[u],
-                xytext=calculate_midpoint(pos[u], pos[v], rad)
-            )
+            if not color:
+                draw_arrow(ax, pos[u], pos[v], rad)
+            else:
+                draw_arrow(ax, pos[u], pos[v], rad, color, tickness=3)
+                
+            # label
+            draw_label(ax, w, pos[u], pos[v], rad)
  
-
+         # nodes
+        colors = [highlights[node]['color'] if node in highlights else 'b' for node in G.nodes ]
+        nx.draw_networkx_nodes(self.graph, self.graph_pos, node_color=colors)
+        nx.draw_networkx_labels(self.graph, self.graph_pos, font_size=10, font_family="sans-serif")
+        
+        
+        if highlights.get('point_to'):
+            plot_pointer(plt.gca(), pos[highlights['point_to']], size=0.2)
         
         ax.axis('off')
         self.figure_canvas_agg.draw()
         self.window.Refresh()
+    
+    def animate(self, nodes, solution, speed):
+        highlights = {} 
+        nodes = remove_duplicates(nodes)
+        
+        for node in nodes:
+            for sucessor, _ in self.functions['get_sucessors'](node):
+                if highlights.get(sucessor):
+                    continue
+                highlights[sucessor] = {'color':'gray'}
+            
+            highlights[node] = {'color': 'orange'}
+            highlights['point_to'] = node
 
+            self.draw(highlights)
+            sleep(speed)
+            
+        # Solution
+        for i in range(len(solution)):
+            node, via_cod = solution[i]
+            highlights[node] = {'color': 'green'}
+            if i < len(solution) - 1:
+                highlights[(node, via_cod, solution[i+1][0])] = {'color': 'green'}
+            
+            
+            self.draw(highlights)
+            sleep(speed / 2)
         
     def run(self):
         self.draw()
+        
         while True:
             event, values = self.window.read()
             if event == sg.WIN_CLOSED:
                 break      
+            
+            if event == '-LIMPAR-':
+                self.draw()
             
             if event == '-BUSCAR-':
                 if values['-ORIGEM-'] == values['-DESTINO-']:
                     sg.popup_error("Origem e destino não podem ser iguais")
                     continue
                 
-                solucao, ordem = self.search_algorithms[values['-ALGORITMO-']](
+                solucao, ordem = self.functions['search_algorithms'][values['-ALGORITMO-']](
                     values['-ORIGEM-'], values['-DESTINO-'], 
-                    self.costs[values['-CRITERIO-']]
+                    self.functions['costs'][values['-CRITERIO-']]
                 )
                 
                 
                 if solucao:
-                    self.draw()
-                    sg.popup(f"SOLUÇÃO: {solucao} \nORDEM DE VISITA: {ordem}", title="Solução")
+                    self.animate(ordem, solucao, speed=0.3)
+                    # sg.popup(f"SOLUÇÃO: {solucao} \nORDEM DE VISITA: {ordem}", title="Solução")
                 else:
                     sg.popup_error("Solução não encontrada\n" + f"SOLUÇÃO: {solucao} \nORDEM DE VISITA: {ordem}")
                     

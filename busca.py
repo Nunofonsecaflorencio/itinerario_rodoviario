@@ -61,6 +61,16 @@ def ler_dados(ficheiro):
     return vias, localidades, arrestas, rede
 
 
+def sucessores(rede, nodo):
+    suc = set()
+    for via in rede[nodo]:
+        if nodo != via.destino:
+            suc.add((via.destino, via.codigo))
+            
+        if nodo != via.origem:
+            suc.add((via.origem, via.codigo))
+        
+    return suc
     
 
 def dfs(rede, origem, destino, funcao_custo):
