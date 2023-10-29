@@ -191,8 +191,8 @@ class ItinerarioGUI:
                 if highlights.get(sucessor):
                     continue
                 highlights[sucessor] = {'color':'gray'}
-                self.draw(highlights)
-                sleep(speed / 6)
+                # self.draw(highlights)
+                # sleep(speed * 0)
             
             sleep(speed / 4)
             
@@ -240,7 +240,7 @@ class ItinerarioGUI:
                 
                 
                 if solucao:
-                    self.animate(ordem, solucao, speed=0.8)
+                    self.animate(ordem, solucao, speed=0.5)
                     # sg.popup(f"SOLUÇÃO: {solucao} \nORDEM DE VISITA: {ordem}", title="Solução")
                 else:
                     sg.popup_error("Solução não encontrada\n" + f"SOLUÇÃO: {solucao} \nORDEM DE VISITA: {ordem}")

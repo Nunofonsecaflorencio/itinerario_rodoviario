@@ -1,3 +1,5 @@
+from random import shuffle
+
 class Via:
     def __init__(self, cod, loc1, loc2, distancia, caracteristicas):
         self.codigo = cod
@@ -31,7 +33,7 @@ def ler_dados(ficheiro):
     
     for linha in linhas:
         linha = linha.strip().split(",")
-        if len(linha) == 0:
+        if len(linha) != 7:
             continue
         
         codigo = linha[0].strip().lower()
@@ -80,7 +82,7 @@ def dfs(rede, origem, destino, funcao_custo):
     ordem = []
     
     while fronteira:
-        localidade = fronteira.pop(0)
+        localidade = fronteira.pop()
         
         ordem.append(localidade)
         
@@ -98,7 +100,7 @@ def dfs(rede, origem, destino, funcao_custo):
         
         visitado.add(localidade)
         
-        
+        shuffle(rede[localidade])
         for via in rede[localidade]:
             if not via.destino in visitado:
                 fronteira.append(via.destino)

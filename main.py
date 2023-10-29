@@ -17,5 +17,4 @@ if __name__ == '__main__':
     
     visualizer = ItinerarioGUI(rede, functions)
     visualizer.run()
-    
-    
+

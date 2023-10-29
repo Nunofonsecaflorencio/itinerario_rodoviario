@@ -1,10 +1,46 @@
-n4, Mozal, Baixa, 50, 2, 0, 40
-n4, Mozal, Joao Mateus, 10, 2, 0, 40
-n4, Mozal, Malhapsene, 10, 2, 0, 40
-n4, Joao Mateus, Baixa, 40, 4, 45, 70
-n4, Joao Mateus, Malhapsene, 40, 4, 45, 70
-avenida mz, Baixa, Malhazine, 40, 4, 45, 70
-avenida mz, Museu, Malhazine, 40, 4, 45, 70
-avenida julius n, Baixa, Magoanine, 55, 4, 45, 70
-avenida mz, Baixa, Magoanine, 40, 4, 45, 70
-avenida julius n, Albazine, Magoanine, 40, 4, 45, 70
+Portagem, Baixa, Boane, 33.4, 0, 0, 0
+Portagem, Baixa, Mozal, 30.2, 0, 0, 0
+Portagem, Baixa, Tchumene, 26.6, 0, 0, 0
+J.Mateus, Museu, C.Matola, 19.1, 0, 0, 0
+J.Mateus, Baixa, C.Matola, 17.5, 0, 0, 0
+Estrada Velha, Baixa, C.Matola, 15.9, 0, 0, 0
+Fomento, Museu, C700, 19.7, 0, 0, 0
+N4, Baixa, Tsalala, 27, 0, 0, 0
+Boane, Baixa, Namaacha, 81.7, 0, 0, 0
+J.Mateus, Baixa, C.Matola, 16, 0, 0, 0
+
+T3, Baixa, Kongolote, 23, 0, 0, 0
+T3, Museu, Kongolote, 24.7, 0, 0, 0
+Portagem, Baixa, Nkobe, 27, 0, 0, 0
+Portagem, Baixa, Nkobe, 29, 0, 0, 0
+Portagem, Baixa, Matola Gare, 23.1, 0, 0, 0
+Portagem, Museu, Matola Gare, 24.4, 0, 0, 0
+T3, Baixa, 1o de Maio, 27, 0, 0, 0
+T3, Museu, 1o de Maio, 27.8, 0, 0, 0
+Jardim, Baixa, Machava Bedene, 14.5, 0, 0, 0
+1o de Maio, Tchumene, Magoanine, 31.3, 0, 0, 0
+J. Chissano, Patrice, Praca dos Combatentes, 17.3, 0, 0, 0
+Jardim, Museu, Bedene, 17.6, 0, 0, 0
+Jardim, Baixa, Patrice, 21.1, 0, 0, 0
+Jardim, Museu, Patrice, 20.5, 0, 0, 0
+
+N1, Baixa, Zimpeto, 23.6, 0, 0, 0
+N1, Museu, Zimpeto, 24.7, 0, 0, 0
+N1, Praca dos Combatentes, Zimpeto, 20.3, 0, 0, 0
+N1, Baixa, Magoanine, 18.8, 0, 0, 0
+
+Magoanine, Baixa, Albazine, 21.7, 0, 0, 0
+Aeroporto, Baixa, Albazine, 21.2, 0, 0, 0
+J. Nyerere, Museu. Albazine, 19.3, 0, 0, 0
+V. Lenine, Baixa, Magoanine, 14.1, 0, 0, 0
+V. Lenine, Museu, Magoanine, 12.5, 0, 0, 0
+Laulane, Baixa, Costa do Sol, 18.4, 0, 0, 0
+J. Nyerere, Museu, Praca dos Combatentes, 8, 0, 0, 0
+Praca dos Herois, Baixa, Magoanine, 14, 0, 0, 0
+V. Lenine, Baixa, Laulane, 17, 0, 0, 0
+V. Lenine, Museu, Laulane, 14, 0, 0, 0
+Av. Angola, Museu, Magoanine, 15, 0, 0, 0
+Magoanine, Baixa, Mahotas, 16, 0, 0, 0
+Magoanine, Museu, Mahotas, 15.4, 0, 0, 0
+
+Costa de Sol, Baixa, Zimpeto, 31, 0, 0, 0
