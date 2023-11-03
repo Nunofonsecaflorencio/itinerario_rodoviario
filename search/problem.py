@@ -55,7 +55,7 @@ class RoadIteneraryProblem:
         return neighbors
     
     def compute_path_cost(self, path):
-        data = {prop: 0 for prop in ['distance', 'road_quality', 'tollgates', 'avarage_velocity', 'steps']}
+        data = {prop: 0 for prop in ['distance', 'avarage_road_quality', 'tollgates', 'avarage_velocity', 'steps']}
         
         for i in range(len(path)-1):
             start, id = path[i]
@@ -68,10 +68,11 @@ class RoadIteneraryProblem:
 
             data['steps'] += 1
             data['distance'] += via.distance
-            data['road_quality'] += via.properties[0]
+            data['avarage_road_quality'] += via.properties[0]
             data['tollgates'] += via.properties[1]
             data['avarage_velocity'] += via.properties[1]
-            
+        
+        data['avarage_road_quality']  /= data['steps']
         data['avarage_velocity'] /= data['steps']
         return data
             

@@ -34,7 +34,7 @@ def DepthFirstSearch(start, end, get_neighbors_edges, compute_path_proprieties, 
     return {
             'solution': None,
             'order': order,
-            'computations': None
+            'computations': {}
             }
 
 
@@ -72,7 +72,7 @@ def BreadthFirstSearch(start, end, get_neighbors_edges, compute_path_proprieties
     return {
             'solution': None,
             'order': order,
-            'computations': None
+            'computations': {}
             }
 
 def reconstruct_path(parents, to):

@@ -110,12 +110,11 @@ class ItinerarioGUI:
         ]]
         
         layoutB = [
-            [sg.Button("Buscar", key='-BUSCAR-', button_color='lime green', size=(16, 2), expand_x=True)],
-            [sg.Button("Rearranjar", key='-REARRANJAR-', expand_x=True), sg.Button("Reset", key='-LIMPAR-', expand_x=True)],
+            [sg.Button("Buscar", key='-BUSCAR-', button_color='lime green', size=(16, 2), expand_x=True), sg.Button("Resumir", key='-RESUMIR-', button_color='lightblue', size=(8, 2), expand_x=True)],
+            [sg.Button("Rearranjar", key='-REARRANJAR-', size=(16, 1), expand_x=True), sg.Button("Reset", key='-LIMPAR-', size=(8, 1), expand_x=True)],
         ]
         
         layout = [
-            [sg.T("", key="-SOLUTION-", text_color='lime green', expand_x=True)],
             [sg.Canvas(key="-CANVAS-", background_color='black', expand_x=True)],
             [sg.Column(layoutA, expand_x=True), sg.VSeparator(), sg.Column(layoutB, expand_x=True)]
         ]
@@ -148,9 +147,8 @@ class ItinerarioGUI:
                     dont_add.add((via.end, loc, via.distance))
             
         self.graph_pos = nx.spring_layout(self.graph)
-        self.update_solution_text("")
         
-        
+        self.summary = {}
         
         
         
@@ -235,9 +233,6 @@ class ItinerarioGUI:
             
             if callback:
                 callback()
-    
-    def update_solution_text(self, text):
-        self.window['-SOLUTION-'].update(text)
         
         
     def run(self):
@@ -250,15 +245,21 @@ class ItinerarioGUI:
             
             if event == '-LIMPAR-':
                 self.draw()
-                self.update_solution_text("")
 
             if event == '-REARRANJAR-':
                 self.initialize(self.network)
-                self.update_solution_text("")
                 self.draw()
             
+            if event == '-RESUMIR-':
+                if self.summary.get('solution'):
+                    text = f"SOLUÇÃO: {self.summary['solution']}\n\n"
+                    text += f"DISTÂNCA:\t{self.summary['distance']} km\n"
+                    text += f"QUALIDADE DO PISO MÉDIA:\t{self.summary['avarage_road_quality']}\n"
+                    text += f"TOTAL EM PORTAGEM: \t{self.summary['tollgates']} MT\n"
+                    text += f"VELOCIDADE MÉDIA:\t{self.summary['avarage_velocity']} km/h"
+                    sg.popup(text, title="Resumo")
+            
             if event == '-BUSCAR-':
-                self.update_solution_text("")
                 if values['-ORIGEM-'] == values['-DESTINO-']:
                     sg.popup_error("Origem e destino não podem ser iguais")
                     continue
@@ -271,8 +272,13 @@ class ItinerarioGUI:
                 solucao, ordem = data['solution'], data['order']
                 
                 if solucao:
-                    set_solution_text = lambda: self.update_solution_text(solution_to_string(solucao))
-                    self.animate(ordem, solucao, speed=0.5, callback=set_solution_text)
+                    self.animate(ordem, solucao, speed=0.5)
+                    
+                    self.summary = {
+                        'solution': solution_to_string(solucao),
+                        **data['computations']
+                    }
+                    
                     # sg.popup(f"SOLUÇÃO: {solucao} \nORDEM DE VISITA: {ordem}", title="Solução")
                 else:
                     sg.popup_error("Solução não encontrada\n" + f"SOLUÇÃO: {solucao} \nORDEM DE VISITA: {ordem}")
