@@ -74,6 +74,15 @@ def plot_pointer(ax, pos, size):
                 )
     )
 
+def solution_to_string(solution):
+    in_string = ''
+    for node, via in solution:
+        if node:
+            in_string += node.upper() + " "
+        if via:
+            in_string += f"({via.upper()}) "
+
+    return in_string
 
 
 class ItinerarioGUI:
@@ -82,14 +91,21 @@ class ItinerarioGUI:
         self.network = network
         self.functions = functions
         
+        nodes = sorted(list(map(lambda p: p.title(), network.keys())))
+        costs = sorted(list(functions['costs']))
+        algos = sorted(list(functions['search_algorithms']))
+        
         layoutA = [[
             sg.Col([
-                [sg.T("Origem", size=(1, 1), expand_x=True), sg.Combo(list(network.keys()), key="-ORIGEM-", expand_x=True)],
-                [sg.T("Destino", size=(1, 1), expand_x=True), sg.Combo(list(network.keys()), key="-DESTINO-", expand_x=True)],
+                [sg.T("Origem", expand_x=True), sg.Combo(nodes, key="-ORIGEM-", expand_x=True)],
+                [sg.T("Destino", expand_x=True), sg.Combo(nodes, key="-DESTINO-", expand_x=True)],
             ], expand_x=True),
             sg.Col([
-                [sg.T("Critério", size=(1, 1), expand_x=True), sg.Combo(list(functions['costs']), default_value=list(functions['costs'])[0], key="-CRITERIO-", expand_x=True)],
-                [sg.T("Algoritmo", size=(1, 1), expand_x=True), sg.Combo(list(functions['search_algorithms']), default_value=list(functions['search_algorithms'])[0], key="-ALGORITMO-", expand_x=True)],
+                [
+                    sg.T("Critério", expand_x=True), sg.Combo(costs, default_value=costs[0], key="-CRITERIO-", expand_x=True),
+                    sg.Checkbox("Aleatório", key="-ALEATORIO-", default=True, expand_x=True)
+                ],
+                [sg.T("Algoritmo", expand_x=True), sg.Combo(algos, default_value=algos[0], key="-ALGORITMO-", expand_x=True)],
             ], expand_x=True)
         ]]
         
@@ -99,6 +115,7 @@ class ItinerarioGUI:
         ]
         
         layout = [
+            [sg.T("", key="-SOLUTION-", text_color='lime green', expand_x=True)],
             [sg.Canvas(key="-CANVAS-", background_color='black', expand_x=True)],
             [sg.Column(layoutA, expand_x=True), sg.VSeparator(), sg.Column(layoutB, expand_x=True)]
         ]
@@ -123,14 +140,17 @@ class ItinerarioGUI:
         dont_add = set()
         for loc, vias in network.items():
             for via in vias:
-                if (loc, via.destino, via.distancia) not in dont_add:
-                    self.graph.add_edge(loc, via.destino,
-                                        label=f"{via.codigo.upper()}",
-                                        via=via.codigo
+                if (loc, via.end, via.distance) not in dont_add:
+                    self.graph.add_edge(loc, via.end,
+                                        label=f"{via.id.upper()}",
+                                        via=via.id
                                         )
-                    dont_add.add((via.destino, loc, via.distancia))
+                    dont_add.add((via.end, loc, via.distance))
             
         self.graph_pos = nx.spring_layout(self.graph)
+        self.update_solution_text("")
+        
+        
         
         
         
@@ -177,7 +197,7 @@ class ItinerarioGUI:
         self.figure_canvas_agg.draw()
         self.window.Refresh()
     
-    def animate(self, nodes, solution, speed):
+    def animate(self, nodes, solution, speed, callback=None):
         highlights = {} 
         nodes = remove_duplicates(nodes)
         
@@ -213,6 +233,12 @@ class ItinerarioGUI:
             self.draw(highlights)
             sleep(speed / 6)
             
+            if callback:
+                callback()
+    
+    def update_solution_text(self, text):
+        self.window['-SOLUTION-'].update(text)
+        
         
     def run(self):
         self.draw()
@@ -224,24 +250,29 @@ class ItinerarioGUI:
             
             if event == '-LIMPAR-':
                 self.draw()
+                self.update_solution_text("")
 
             if event == '-REARRANJAR-':
                 self.initialize(self.network)
+                self.update_solution_text("")
                 self.draw()
             
             if event == '-BUSCAR-':
+                self.update_solution_text("")
                 if values['-ORIGEM-'] == values['-DESTINO-']:
                     sg.popup_error("Origem e destino não podem ser iguais")
                     continue
                 
-                solucao, ordem = self.functions['search_algorithms'][values['-ALGORITMO-']](
-                    values['-ORIGEM-'], values['-DESTINO-'], 
-                    self.functions['costs'][values['-CRITERIO-']]
+                data = self.functions['search_algorithms'][values['-ALGORITMO-']](
+                    values['-ORIGEM-'].lower(), values['-DESTINO-'].lower(), 
+                    self.functions['costs'][values['-CRITERIO-']],
+                    values['-ALEATORIO-']
                 )
-                
+                solucao, ordem = data['solution'], data['order']
                 
                 if solucao:
-                    self.animate(ordem, solucao, speed=0.5)
+                    set_solution_text = lambda: self.update_solution_text(solution_to_string(solucao))
+                    self.animate(ordem, solucao, speed=0.5, callback=set_solution_text)
                     # sg.popup(f"SOLUÇÃO: {solucao} \nORDEM DE VISITA: {ordem}", title="Solução")
                 else:
                     sg.popup_error("Solução não encontrada\n" + f"SOLUÇÃO: {solucao} \nORDEM DE VISITA: {ordem}")

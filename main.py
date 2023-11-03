@@ -1,20 +1,23 @@
 from gui import ItinerarioGUI
-from busca import *
+from search.problem import RoadIteneraryProblem
+from search.algorithms import DepthFirstSearch, BreadthFirstSearch
 
 if __name__ == '__main__':
-    vias, localidades, arestas, rede =  ler_dados('dados.txt')
+    
+    itinerario = RoadIteneraryProblem("dados.txt")
     
     
     functions = {
         'search_algorithms':{
-            'DFS': lambda origem, destino, funcao_custo: dfs(rede, origem, destino, funcao_custo)
+            'Busca em Profundidade': lambda start, end, _, do_shuffle: DepthFirstSearch(start, end, itinerario.get_neighbors_edges, itinerario.compute_path_cost, do_shuffle),
+            'Busca em Largura': lambda start, end, _, do_shuffle: BreadthFirstSearch(start, end, itinerario.get_neighbors_edges, itinerario.compute_path_cost, do_shuffle)
         },
         'costs': {
             'C0': lambda v: 1
         },
-        'get_sucessors': lambda node: sucessores(rede, node)
+        'get_sucessors': itinerario.get_neighbors_edges
     }
     
-    visualizer = ItinerarioGUI(rede, functions)
+    visualizer = ItinerarioGUI(itinerario.graph, functions)
     visualizer.run()
 
