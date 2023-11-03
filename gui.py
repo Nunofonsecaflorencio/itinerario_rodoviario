@@ -212,6 +212,7 @@ class ItinerarioGUI:
             
             self.draw(highlights)
             sleep(speed / 6)
+            
         
     def run(self):
         self.draw()

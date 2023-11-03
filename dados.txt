@@ -12,7 +12,7 @@ J.Mateus, Baixa, C.Matola, 16, 0, 0, 0
 T3, Baixa, Kongolote, 23, 0, 0, 0
 T3, Museu, Kongolote, 24.7, 0, 0, 0
 Portagem, Baixa, Nkobe, 27, 0, 0, 0
-Portagem, Baixa, Nkobe, 29, 0, 0, 0
+Portagem, Museu, Nkobe, 29, 0, 0, 0
 Portagem, Baixa, Matola Gare, 23.1, 0, 0, 0
 Portagem, Museu, Matola Gare, 24.4, 0, 0, 0
 T3, Baixa, 1o de Maio, 27, 0, 0, 0

@@ -82,7 +82,7 @@ def dfs(rede, origem, destino, funcao_custo):
     ordem = []
     
     while fronteira:
-        localidade = fronteira.pop()
+        localidade = fronteira.pop(0)
         
         ordem.append(localidade)
         
