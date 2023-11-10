@@ -13,10 +13,9 @@ if __name__ == '__main__':
             'Busca em Largura': lambda start, end, _, do_shuffle: BreadthFirstSearch(start, end, itinerario.get_neighbors_edges, itinerario.compute_path_cost, do_shuffle)
         },
         'costs': {
-            'C0': lambda v: 1,
-            'C1': lambda v: 2,
-            'C3':lambda v: 3
-
+            'C1': lambda via: via.distance,
+            'C2': lambda via: via.custo_2(),
+            'C3': lambda via: via.custo_3(), 
         },
         'get_sucessors': itinerario.get_neighbors_edges
     }

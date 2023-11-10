@@ -93,7 +93,7 @@ class ItinerarioGUI:
         
         nodes = sorted(list(map(lambda p: p.title(), network.keys())))
         costs = sorted(list(functions['costs']))
-        algos = sorted(list(functions['search_algorithms']))
+        algos = list(functions['search_algorithms'])
         
         layoutA = [[
             sg.Col([
@@ -233,26 +233,12 @@ class ItinerarioGUI:
             
             if callback:
                 callback()
-        
-             ##################################################
-    #para defimir/actualizar o criterio selecionado        
-    # def set_selected_criterio(criterio):
-    #     self.selected_criterio = criterio  
+
         
     def run(self):
         self.draw()
         
         while True:
-                ######################################
-            #selected_crit = self.selected_criterio
-            # Usar o criterio selecionado para chamar o metodo adequado  -- precisa de correcao
-            #if selected_crit is None:
-                #sg.popup_error("Selecione um critério antes de buscar.")
-           # else:
-                    # Use o critério selecionado para chamar o método adequado
-              #  result = self.functions['costs'][selected_crit](values['-ALGORITMO-'])
-                ##########################################    
-
 
             event, values = self.window.read()
             if event == sg.WIN_CLOSED:
@@ -275,6 +261,15 @@ class ItinerarioGUI:
                     sg.popup(text, title="Resumo")
             
             if event == '-BUSCAR-':
+                
+                if not values.get('-ORIGEM-'):
+                    sg.popup_error("Escolha uma origem!")
+                    continue
+                
+                if not values.get('-DESTINO-'):
+                    sg.popup_error("Escolha um destino!")
+                    continue
+                
                 if values['-ORIGEM-'] == values['-DESTINO-']:
                     sg.popup_error("Origem e destino não podem ser iguais")
                     continue
