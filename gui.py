@@ -124,7 +124,7 @@ class ItinerarioGUI:
         
 
         self.fig, self.ax = plt.subplots()
-        self.fig.set_size_inches(12, 7)
+        self.fig.set_size_inches(5, 5)
         self.fig.subplots_adjust(left=0, right=1, bottom=0, top=1)
         self.fig.set_facecolor('lightcyan')
         
@@ -234,11 +234,26 @@ class ItinerarioGUI:
             if callback:
                 callback()
         
+             ##################################################
+    #para defimir/actualizar o criterio selecionado        
+    # def set_selected_criterio(criterio):
+    #     self.selected_criterio = criterio  
         
     def run(self):
         self.draw()
         
         while True:
+                ######################################
+            #selected_crit = self.selected_criterio
+            # Usar o criterio selecionado para chamar o metodo adequado  -- precisa de correcao
+            #if selected_crit is None:
+                #sg.popup_error("Selecione um critério antes de buscar.")
+           # else:
+                    # Use o critério selecionado para chamar o método adequado
+              #  result = self.functions['costs'][selected_crit](values['-ALGORITMO-'])
+                ##########################################    
+
+
             event, values = self.window.read()
             if event == sg.WIN_CLOSED:
                 break      
