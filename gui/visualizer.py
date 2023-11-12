@@ -1,88 +1,15 @@
 import PySimpleGUI as sg
 import networkx as nx
 
+from .utility import *
+
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 from time import sleep
-
-# sg.theme_previewer() 
 sg.theme('DarkTeal9') 
 sg.set_options(font=("Comic Sans",16))
 
-def calculate_midpoint(posA, posB, rad):
-    # Calculate the control point for the arc
-    control = (
-        (posA[0] + posB[0]) / 2 + rad * (posA[1] - posB[1]),
-        (posA[1] + posB[1]) / 2 + rad * (posB[0] - posA[0])
-    )
-
-    # Calculate the midpoint along the arc
-    t = 0.5  # Parameter for the Bezier curve (0.5 for midpoint)
-    midpoint = (
-        (1 - t) ** 2 * posA[0] + 2 * (1 - t) * t * control[0] + t ** 2 * posB[0],
-        (1 - t) ** 2 * posA[1] + 2 * (1 - t) * t * control[1] + t ** 2 * posB[1]
-    )
-
-    return midpoint
-
-def remove_duplicates(input_list):
-    seen = set()
-    output_list = []
-
-    for item in input_list:
-        if item not in seen:
-            seen.add(item)
-            output_list.append(item)
-
-    return output_list
-
-
-def draw_arrow(ax, posA, posB, radius, c='0.4', tickness=0.1):
-    
-  
-    ax.annotate("",
-                xy=posA,
-                xytext=posB,
-                arrowprops=dict(
-                    arrowstyle="-", color=c,
-                    connectionstyle="arc3,rad=rrr".replace('rrr',str(radius)),
-                    linewidth=tickness
-                )
-            )
-
-def draw_label(ax, label, posA, posB,radius):
-    ax.annotate(
-                label,
-                xy=posA,
-                xytext=calculate_midpoint(posA, posB, radius),
-                fontsize=6
-            )
-
-def plot_pointer(ax, pos, size):
-    # Define the points of the arrow/triangle
-    x = pos[0]
-    y = pos[1]
-    arrow_points = [(x - size, y - size), (x + size, y - size), (x, y + size)]
-
-    ax.annotate(
-        "",
-        xy=pos, xytext=(x, y - size),
-        arrowprops=dict(
-                    arrowstyle="->", color="gold",
-                    linewidth=5
-                )
-    )
-
-def solution_to_string(solution):
-    in_string = ''
-    for node, via in solution:
-        if node:
-            in_string += node.upper() + " "
-        if via:
-            in_string += f"({via.upper()}) "
-
-    return in_string
 
 
 class ItinerarioGUI:
@@ -94,6 +21,7 @@ class ItinerarioGUI:
         nodes = sorted(list(map(lambda p: p.title(), network.keys())))
         costs = sorted(list(functions['costs']))
         algos = list(functions['search_algorithms'])
+        self.road_qualities = ["1. Muito Mau", "2. Mau", "3. Razoável", "4. Bom", "5. Muito Bom"]
         
         layoutA = [[
             sg.Col([
@@ -105,13 +33,15 @@ class ItinerarioGUI:
                     sg.T("Critério", expand_x=True), sg.Combo(costs, default_value=costs[0], key="-CRITERIO-", expand_x=True),
                     sg.Checkbox("Aleatório", key="-ALEATORIO-", default=True, expand_x=True)
                 ],
+                [sg.T("Estado do Piso Mín.", expand_x=True), sg.Combo(self.road_qualities, default_value=self.road_qualities[0], key="-PISO-", expand_x=True)],
                 [sg.T("Algoritmo", expand_x=True), sg.Combo(algos, default_value=algos[0], key="-ALGORITMO-", expand_x=True)],
             ], expand_x=True)
         ]]
         
         layoutB = [
-            [sg.Button("Buscar", key='-BUSCAR-', button_color='lime green', size=(16, 2), expand_x=True), sg.Button("Resumir", key='-RESUMIR-', button_color='lightblue', size=(8, 2), expand_x=True)],
+            [sg.Button("Buscar", key='-BUSCAR-', button_color='lime green', size=(16, 2), expand_x=True), sg.Button("Resumo", key='-RESUMIR-', button_color='lightblue', size=(8, 2), expand_x=True)],
             [sg.Button("Rearranjar", key='-REARRANJAR-', size=(16, 1), expand_x=True), sg.Button("Reset", key='-LIMPAR-', size=(8, 1), expand_x=True)],
+            [sg.Slider((3, 0), key="-SPEED-", default_value=0.5, resolution=0.1, orientation='horizontal', disable_number_display=True, expand_x=True)]
         ]
         
         layout = [
@@ -202,8 +132,10 @@ class ItinerarioGUI:
         for node in nodes:
             highlights[node] = {'color': 'orange'}
             highlights['point_to'] = node
-            self.draw(highlights)
-            sleep(speed*0.01)
+            
+            if speed > 0:
+                self.draw(highlights)
+                sleep(speed*0.01)
             
             for sucessor, _ in self.functions['get_sucessors'](node):
                 if highlights.get(sucessor):
@@ -221,15 +153,17 @@ class ItinerarioGUI:
             node, via_cod = solution[i]
             highlights[node] = {'color': 'green'}
             
-            self.draw(highlights)
-            sleep(speed / 5)
+            if speed > 0:
+                self.draw(highlights)
+                sleep(speed / 5)
             
             if i < len(solution) - 1:
                 highlights[(node, via_cod, solution[i+1][0])] = {'color': 'green'}
             
             
             self.draw(highlights)
-            sleep(speed / 6)
+            if speed > 0:
+                sleep(speed / 6)
             
             if callback:
                 callback()
@@ -255,9 +189,12 @@ class ItinerarioGUI:
                 if self.summary.get('solution'):
                     text = f"SOLUÇÃO: {self.summary['solution']}\n\n"
                     text += f"DISTÂNCA:\t{self.summary['distance']} km\n"
-                    text += f"QUALIDADE DO PISO MÉDIA:\t{self.summary['avarage_road_quality']}\n"
+                    text += f"QUALIDADE DO PISO MÉDIA:\t{self.road_qualities[int(self.summary['avarage_road_quality'])]}\n"
                     text += f"TOTAL EM PORTAGEM: \t{self.summary['tollgates']} MT\n"
-                    text += f"VELOCIDADE MÉDIA:\t{self.summary['avarage_velocity']} km/h"
+                    text += f"VELOCIDADE MÉDIA:\t{round(self.summary['avarage_velocity'], 2)} km/h\n"
+                    text += f"\nC1 (Distância):\t{self.summary['C1']} km/h\n"
+                    text += f"C2 (Duração):\t{round(self.summary['C2'], 1)} h\n"
+                    text += f"C1 (Custo/Consumo):\t{round(self.summary['C3'], 2)}\n"
                     sg.popup(text, title="Resumo")
             
             if event == '-BUSCAR-':
@@ -275,14 +212,15 @@ class ItinerarioGUI:
                     continue
                 
                 data = self.functions['search_algorithms'][values['-ALGORITMO-']](
-                    values['-ORIGEM-'].lower(), values['-DESTINO-'].lower(), 
+                    values['-ORIGEM-'].lower(), values['-DESTINO-'].lower(),
+                    self.road_qualities.index(values['-PISO-']) + 1,
                     self.functions['costs'][values['-CRITERIO-']],
                     values['-ALEATORIO-']
                 )
                 solucao, ordem = data['solution'], data['order']
                 
                 if solucao:
-                    self.animate(ordem, solucao, speed=0.5)
+                    self.animate(ordem, solucao, speed=values['-SPEED-'])
                     
                     self.summary = {
                         'solution': solution_to_string(solucao),
@@ -291,7 +229,10 @@ class ItinerarioGUI:
                     
                     # sg.popup(f"SOLUÇÃO: {solucao} \nORDEM DE VISITA: {ordem}", title="Solução")
                 else:
-                    sg.popup_error("Solução não encontrada\n" + f"SOLUÇÃO: {solucao} \nORDEM DE VISITA: {ordem}")
+                    sg.popup_error("Solução não encontrada!s")
                     
             
         self.window.close()
+        
+        
+        

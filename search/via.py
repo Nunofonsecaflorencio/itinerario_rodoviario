@@ -12,18 +12,17 @@ class Via:
     def __repr__(self):
         return f"De {self.start} Para {self.end} Via {self.codigo} características {self.properties}"
 
-     #C2
-    def custo_2(self):
+    
+    def C1(self):
+        return self.distance
+
+    def C2(self):
         # C2 - Menor duração prevista
         distance = self.distance
         average_velocity = self.properties[2]  # Índice 2 é a velocidade média
-        c2 = distance / average_velocity
-        return c2
+        return distance / average_velocity
 
-
-############################################
-    #C3
-    def custo_3(self):
+    def C3(self):
         # C3 - Menor custo
         distance = self.distance
         road_quality = self.properties[0]  # indice 0 = piso

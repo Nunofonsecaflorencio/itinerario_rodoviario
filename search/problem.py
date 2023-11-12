@@ -43,9 +43,13 @@ class RoadIteneraryProblem:
             self.graph[end].append(self.vias[-1])
             
     
-    def get_neighbors_edges(self, place):
+    def get_neighbors_edges(self, place, min_road_quality=1):
         neighbors = set()
         for via in self.graph[place]:
+            
+            if via.properties[0] < min_road_quality:
+                continue
+            
             if place != via.end:
                 neighbors.add((via.id, via.end))
                 
@@ -55,7 +59,7 @@ class RoadIteneraryProblem:
         return neighbors
     
     def compute_path_cost(self, path):
-        data = {prop: 0 for prop in ['distance', 'avarage_road_quality', 'tollgates', 'avarage_velocity', 'steps']}
+        data = {prop: 0 for prop in ['distance', 'avarage_road_quality', 'tollgates', 'avarage_velocity', 'steps', 'C1', 'C2', 'C3']}
         
         for i in range(len(path)-1):
             start, id = path[i]
@@ -71,35 +75,12 @@ class RoadIteneraryProblem:
             data['avarage_road_quality'] += via.properties[0]
             data['tollgates'] += via.properties[1]
             data['avarage_velocity'] += via.properties[2]
+            data['C1'] += via.C1()
+            data['C2'] += via.C2()
+            data['C3'] += via.C3()
         
         data['avarage_road_quality']  /= data['steps']
         data['avarage_velocity'] /= data['steps']
 
        
         return data
-
-       ########################################################################
-    #IMPLEMENTACAO DOS CRITERIOS
-    def via_menor_custo( via1, via2):
-        custo_via1 = via1.custo_3()  
-        custo_via2 = via2.custo_3()  
-
-        menor_custo = min(custo_via1, custo_via2)
-
-        return menor_custo
-
-    def via_menor_duracao( via1, via2):
-        duracao_via1 = via1.custo_2() 
-        duracao_via2 = via2.custo_2() 
-
-        menor_duracao = min(duracao_via1, duracao_via2)
-
-        return menor_duracao
-
-    def via_menor_distancia_percorrida(via1, via2):
-        distancia_via1 = via1.distance  
-        distancia_via2 = via2.distance  
-
-        menor_distancia = min(distancia_via1, distancia_via2)
-
-        return menor_distancia
