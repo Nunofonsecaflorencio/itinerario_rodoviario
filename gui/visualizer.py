@@ -50,7 +50,7 @@ class ItinerarioGUI:
         ]
         
         
-        self.window = sg.Window("Itinerário Rodoviário", layout, finalize=True)
+        self.window = sg.Window("Itinerário Rodoviário", layout, finalize=True, resizable=True)
         
 
         self.fig, self.ax = plt.subplots()
