@@ -1,28 +1,33 @@
-Portagem, Baixa, Boane, 33.4, 4, 21, 44.53
+Av. E. Mondlane, Museu, Xipamanine, 4.6, 1, 1, 1
+Av. F. S. Magaia, Baixa, Xipamanine, 3.7, 1, 1, 1
+Av. F. S. Magaia, Baixa, Museu, 0.75, 1, 1, 1
+J. Nyerere, Museu, Praca dos Combatentes, 8, 5, 0, 16.55
+
+Jardim, Xipamanine, Matola Gare, 26.8, 1, 1, 1
+Jardim, Xipamanine, M. Socimol, 16.7, 1, 1, 1
+
+Jardim, Baixa, M. Socimol, 17.4, 1, 1, 1
+Jardim, Museu, M. Socimol, 17.7, 1, 1, 1
+
+Portagem, Baixa, Nkobe, 27, 4, 21, 58.85
+Portagem, Museu, Nkobe, 29, 4, 21, 60
+Portagem, Baixa, Matola Gare, 23.1, 5, 21, 37.5
+Portagem, Museu, Matola Gare, 24.4, 5, 21, 39.56
+
+T3, Baixa, 1o de Maio, 27, 3, 0, 35.21
+T3, Museu, 1o de Maio, 27.8, 3, 0, 36.26
+
+Jardim, Baixa, Patrice, 21.1, 5, 0, 48.69
+Jardim, Museu, Patrice, 20.5, 0, 0, 0
+
 Portagem, Baixa, Mozal, 30.2, 4, 21, 60.4
 Portagem, Baixa, Tchumene, 26.6, 3, 21, 33.25
 J.Mateus, Museu, C.Matola, 19.1, 4, 0, 49.82
 J.Mateus, Baixa, C.Matola, 17.5, 4, 0, 45.65
 Estrada Velha, Baixa, C.Matola, 15.9, 3, 0, 40.43
-Fomento, Museu, C700, 19.7, 4, 0, 49.25
-N4, Baixa, Tsalala, 27, 2, 0, 49.09
-Boane, Baixa, Namaacha, 81.7, 5, 0, 51.06
 J.Mateus, Baixa, C.Matola, 16, 5, 0, 32.0
 
-T3, Baixa, Kongolote, 23, 4, 0, 35.38
-T3, Museu, Kongolote, 24.7, 3, 0, 36.14
-Portagem, Baixa, Nkobe, 27, 4, 21, 58.85
-Portagem, Museu, Nkobe, 29, 4, 21, 60
-Portagem, Baixa, Matola Gare, 23.1, 5, 21, 37.5
-Portagem, Museu, Matola Gare, 24.4, 5, 21, 39.56
-T3, Baixa, 1o de Maio, 27, 3, 0, 35.21
-T3, Museu, 1o de Maio, 27.8, 3, 0, 36.26
-Jardim, Baixa, Machava Bedene, 14.5, 5, 0, 43.5
-1o de Maio, Tchumene, Magoanine, 31.3, 3, 0, 39.95
 J. Chissano, Patrice, Praca dos Combatentes, 17.3, 4, 0, 32.43
-Jardim, Museu, Bedene, 17.6, 4, 0, 70.4
-Jardim, Baixa, Patrice, 21.1, 5, 0, 4869
-Jardim, Museu, Patrice, 20.5, 0, 0, 0
 
 N1, Baixa, Zimpeto, 23.6, 5, 0, 28.09
 N1, Museu, Zimpeto, 24.7, 5, 0, 51.10
@@ -34,13 +39,8 @@ Aeroporto, Baixa, Albazine, 21.2, 5, 0, 27.65
 J. Nyerere, Museu. Albazine, 19.3, 4, 0, 22.705
 V. Lenine, Baixa, Magoanine, 14.1, 4, 0, 31.33
 V. Lenine, Museu, Magoanine, 12.5, 4, 0, 23.43
-Laulane, Baixa, Costa do Sol, 18.4, 5, 0, 24
-J. Nyerere, Museu, Praca dos Combatentes, 8, 5, 0, 16.55
+
 Praca dos Herois, Baixa, Magoanine, 14, 5, 0, 36.92
 V. Lenine, Baixa, Laulane, 17, 5, 0, 30
 V. Lenine, Museu, Laulane, 14, 5, 0, 24.0
 Av. Angola, Museu, Magoanine, 15, 5, 0, 29.0
-Magoanine, Baixa, Mahotas, 16, 5, 0, 28.2
-Magoanine, Museu, Mahotas, 15.4, 5, 0, 23.1
-
-Costa de Sol, Baixa, Zimpeto, 31, 5, 0, 35.76
