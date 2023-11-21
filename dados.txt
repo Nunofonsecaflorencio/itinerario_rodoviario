@@ -1,13 +1,13 @@
-Av. E. Mondlane, Museu, Xipamanine, 4.6, 1, 1, 1
-Av. F. S. Magaia, Baixa, Xipamanine, 3.7, 1, 1, 1
-Av. F. S. Magaia, Baixa, Museu, 0.75, 1, 1, 1
+Av. E. Mondlane, Museu, Xipamanine, 4.6, 3, 0, 50
+Av. F. S. Magaia, Baixa, Xipamanine, 3.7, 2, 0, 50
+Av. F. S. Magaia, Baixa, Museu, 0.75, 1, 2, 50
 J. Nyerere, Museu, Praca dos Combatentes, 8, 5, 0, 16.55
 
-Jardim, Xipamanine, Matola Gare, 26.8, 1, 1, 1
-Jardim, Xipamanine, M. Socimol, 16.7, 1, 1, 1
+Jardim, Xipamanine, Matola Gare, 26.8, 1, 0, 45
+Jardim, Xipamanine, M. Socimol, 16.7, 1, 0, 40
 
-Jardim, Baixa, M. Socimol, 17.4, 1, 1, 1
-Jardim, Museu, M. Socimol, 17.7, 1, 1, 1
+Jardim, Baixa, M. Socimol, 17.4, 2, 0, 45
+Jardim, Museu, M. Socimol, 17.7, 2, 0, 45
 
 Portagem, Baixa, Nkobe, 27, 4, 21, 58.85
 Portagem, Museu, Nkobe, 29, 4, 21, 60
