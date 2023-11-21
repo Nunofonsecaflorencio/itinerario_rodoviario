@@ -13,12 +13,16 @@ Portagem, Baixa, Nkobe, 27, 4, 21, 58.85
 Portagem, Museu, Nkobe, 29, 4, 21, 60
 Portagem, Baixa, Matola Gare, 23.1, 5, 21, 37.5
 Portagem, Museu, Matola Gare, 24.4, 5, 21, 39.56
+N4, Baixa, Tsalala, 27, 2, 0, 49.09
+Boane, Baixa, Namaacha, 81.7, 5, 0, 51.06
 
 T3, Baixa, 1o de Maio, 27, 3, 0, 35.21
 T3, Museu, 1o de Maio, 27.8, 3, 0, 36.26
+T3, Baixa, Kongolote, 23, 4, 0, 35.38
+T3, Museu, Kongolote, 24.7, 3, 0, 36.14
 
 Jardim, Baixa, Patrice, 21.1, 5, 0, 48.69
-Jardim, Museu, Patrice, 20.5, 0, 0, 0
+Jardim, Museu, Patrice, 20.5, 4, 0, 50
 
 Portagem, Baixa, Mozal, 30.2, 4, 21, 60.4
 Portagem, Baixa, Tchumene, 26.6, 3, 21, 33.25
@@ -44,3 +48,5 @@ Praca dos Herois, Baixa, Magoanine, 14, 5, 0, 36.92
 V. Lenine, Baixa, Laulane, 17, 5, 0, 30
 V. Lenine, Museu, Laulane, 14, 5, 0, 24.0
 Av. Angola, Museu, Magoanine, 15, 5, 0, 29.0
+Magoanine, Baixa, Mahotas, 16, 5, 0, 28.2
+Magoanine, Museu, Mahotas, 15.4, 5, 0, 23.1

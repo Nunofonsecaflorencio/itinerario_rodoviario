@@ -173,7 +173,6 @@ class ItinerarioGUI:
         self.draw()
         
         while True:
-
             event, values = self.window.read()
             if event == sg.WIN_CLOSED:
                 break      
@@ -227,12 +226,7 @@ class ItinerarioGUI:
                         **data['computations']
                     }
                     
-                    # sg.popup(f"SOLUÇÃO: {solucao} \nORDEM DE VISITA: {ordem}", title="Solução")
                 else:
-                    sg.popup_error("Solução não encontrada!s")
-                    
+                    sg.popup_error("Solução não encontrada!s")     
             
         self.window.close()
-        
-        
-        
